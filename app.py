@@ -19,7 +19,8 @@ def chat_reply():
 
     print("📩 Prompt received:", user_message)
 
-    url = "https://api-inference.huggingface.co/models/gpt2"
+    url = "https://api-inference.huggingface.co/models/google/flan-t5-base"
+
 
 
     headers = {
@@ -42,7 +43,8 @@ def chat_reply():
 
     if response.status_code == 200:
         result = response.json()
-        reply = result[0].get("generated_text", "Sorry, no reply generated.")
+        reply = result[0]['generated_text'] if isinstance(result, list) else result.get('generated_text', '')
+        #reply = result[0].get("generated_text", "Sorry, no reply generated.")
         return jsonify({"reply": reply})
     else:
         print("❌ Hugging Face API call failed!")
