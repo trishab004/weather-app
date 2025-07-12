@@ -6,21 +6,20 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-HF_API_KEY = os.environ.get("HF_API_KEY")  # Your Hugging Face API key in Render secrets
+HF_API_KEY = os.environ.get("HF_API_KEY")  # Set this securely in Render
 
 @app.route('/')
 def home():
-    return "🌤️ Trisha's Weather & Chatbot Backend Running on Hugging Face!"
+    return "🌤️ Trisha's Weather & Chatbot Backend Running!"
 
-@app.route('/gemini', methods=['POST'])
-def gemini_reply():
+@app.route('/chat', methods=['POST'])
+def chat_reply():
     data = request.get_json()
-    prompt = data.get("prompt", "")
+    user_message = data.get("message", "")
 
-    print("📩 Prompt received:", prompt)
+    print("📩 Prompt received:", user_message)
 
-    # Hugging Face text generation endpoint (example using a Hugging Face hosted model)
-    url = "https://api-inference.huggingface.co/models/gpt2"  # or your chosen HF model
+    url = "https://api-inference.huggingface.co/models/google/flan-t5-xl"  # or another model
 
     headers = {
         "Authorization": f"Bearer {HF_API_KEY}",
@@ -28,22 +27,20 @@ def gemini_reply():
     }
 
     payload = {
-        "inputs": prompt,
-        # Optional parameters to control output length, temperature, etc.
+        "inputs": user_message,
         "parameters": {
-            "max_new_tokens": 150,
+            "max_new_tokens": 100,
             "temperature": 0.7,
-            "top_p": 0.9
+            "top_p": 0.95
         }
     }
 
     response = requests.post(url, headers=headers, json=payload)
-    print("📡 Hugging Face API status:", response.status_code)
-    print("🔁 Response raw:", response.text)
+    print("📡 HF API status:", response.status_code)
+    print("🔁 Raw response:", response.text)
 
     if response.status_code == 200:
         result = response.json()
-        # Hugging Face text generation usually returns a list with 'generated_text' key
         reply = result[0].get("generated_text", "Sorry, no reply generated.")
         return jsonify({"reply": reply})
     else:
