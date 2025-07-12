@@ -19,7 +19,8 @@ def chat_reply():
 
     print("📩 Prompt received:", user_message)
 
-    url = "https://api-inference.huggingface.co/models/google/flan-t5-base"
+    url = "https://api-inference.huggingface.co/models/gpt2"
+
 
     headers = {
         "Authorization": f"Bearer {HF_API_KEY}",
