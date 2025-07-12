@@ -19,7 +19,7 @@ def chat_reply():
 
     print("📩 Prompt received:", user_message)
 
-    url = "https://api-inference.huggingface.co/models/google/flan-t5-xl"  # or another model
+    url = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
 
     headers = {
         "Authorization": f"Bearer {HF_API_KEY}",
